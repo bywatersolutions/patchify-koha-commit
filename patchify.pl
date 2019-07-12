@@ -29,6 +29,7 @@ my @lines = read_file($input_file);
 
 my $mapping = {
     'b/C4/' => '/usr/share/koha/lib/C4/',
+    'b/Koha/' => '/usr/share/koha/lib/Koha/',
     'b/t/'  => '/tmp/',
 };
 
