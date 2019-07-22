@@ -8,21 +8,30 @@ use Getopt::Long;
 
 my $input_file;
 my $output_file;
+my $commit_id;
 my $verbose;
 
 GetOptions(
     "i|input=s"  => \$input_file,
     "o|output=s" => \$output_file,
+    "c|commit=s" => \$commit_id,
     "verbose"    => \$verbose,
 ) or die("Error in command line arguments\n");
 
-unless ($input_file) {
-    say "-i --input <path to patch file> is required";
-    exit 1;
+unless ($commit_id) {
+    unless ($input_file) {
+        say "-i --input <path to patch file> is required";
+        exit 1;
+    }
+    unless ($output_file) {
+        say "-o --output <path to patch file> is required";
+        exit 1;
+    }
 }
-unless ($output_file) {
-    say "-o --output <path to patch file> is required";
-    exit 1;
+
+if ($commit_id) {
+    my $output = `git format-patch -1 $commit_id`;
+    $input_file = `ls 0001-*`;
 }
 
 my @lines = read_file($input_file);
