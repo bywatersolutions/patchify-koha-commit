@@ -30,8 +30,11 @@ unless ($commit_id) {
 }
 
 if ($commit_id) {
-    my $output = `git format-patch -1 $commit_id`;
+    my $output = `rm 0001-*`;
+    $output = `git format-patch -1 $commit_id`;
     $input_file = `ls 0001-*`;
+    chomp $input_file;
+    $output_file = $input_file;
 }
 
 my @lines = read_file($input_file);
@@ -39,6 +42,8 @@ my @lines = read_file($input_file);
 my $mapping = {
     'b/C4/' => '/usr/share/koha/lib/C4/',
     'b/Koha/' => '/usr/share/koha/lib/Koha/',
+    'b/' => '/usr/share/koha/intranet/cgi-bin/',
+    'b/opac' => '/usr/share/koha/opac/cgi-bin/',
     'b/t/'  => '/tmp/',
 };
 
