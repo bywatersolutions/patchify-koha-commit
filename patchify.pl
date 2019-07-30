@@ -8,12 +8,14 @@ use Getopt::Long;
 
 my $input_file;
 my $output_file;
+my $output_dir;
 my $commit_id;
 my $verbose;
 
 GetOptions(
     "i|input=s"  => \$input_file,
     "o|output=s" => \$output_file,
+    "d|output_dir=s" => \$output_dir,
     "c|commit=s" => \$commit_id,
     "verbose"    => \$verbose,
 ) or die("Error in command line arguments\n");
@@ -30,9 +32,12 @@ unless ($commit_id) {
 }
 
 if ($commit_id) {
-    my $output = `rm 0001-*`;
-    $output = `git format-patch -1 $commit_id`;
-    $input_file = `ls 0001-*`;
+    unless ($output_dir) {
+        $output_dir = "/tmp";
+    }
+    my $cmd = `rm $output_dir/0001-*`;
+    $cmd = `git format-patch -o $output_dir -1 $commit_id`;
+    $input_file = `ls $output_dir/0001-*`;
     chomp $input_file;
     $output_file = $input_file;
 }
@@ -42,7 +47,7 @@ my @lines = read_file($input_file);
 my $mapping = {
     'b/C4/' => '/usr/share/koha/lib/C4/',
     'b/Koha/' => '/usr/share/koha/lib/Koha/',
-    'b/' => '/usr/share/koha/intranet/cgi-bin/',
+    'b/installer/' => '/usr/share/koha/intranet/cgi-bin/installer/',
     'b/opac' => '/usr/share/koha/opac/cgi-bin/',
     'b/t/'  => '/tmp/',
 };
