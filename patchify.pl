@@ -48,7 +48,10 @@ my $mapping = {
     'b/C4/' => '/usr/share/koha/lib/C4/',
     'b/Koha/' => '/usr/share/koha/lib/Koha/',
     'b/installer/' => '/usr/share/koha/intranet/cgi-bin/installer/',
-    'b/opac' => '/usr/share/koha/opac/cgi-bin/',
+    'b/opac/' => '/usr/share/koha/opac/cgi-bin/opac/',
+    'b/misc/' => '/usr/share/koha/bin/',
+    'b/tools/' => '/usr/share/koha/intranet/cgi-bin/tools/',
+    'b/koha-tmpl/intranet-tmpl/' => '/usr/share/koha/intranet/htdocs/intranet-tmpl/',
     'b/t/'  => '/tmp/',
 };
 
