@@ -35,7 +35,11 @@ if ($commit_id) {
     unless ($output_dir) {
         $output_dir = "/tmp";
     }
-    my $cmd = `rm $output_dir/0001-*`;
+    my $filename = "$output_dir/0001-*";
+    my $cmd;
+    if (-e $filename) {
+        $cmd = `rm $output_dir/0001-*`;
+    }
     $cmd = `git format-patch -o $output_dir -1 $commit_id`;
     $input_file = `ls $output_dir/0001-*`;
     chomp $input_file;
@@ -52,6 +56,7 @@ my $mapping = {
     'b/misc/' => '/usr/share/koha/bin/',
     'b/tools/' => '/usr/share/koha/intranet/cgi-bin/tools/',
     'b/koha-tmpl/intranet-tmpl/' => '/usr/share/koha/intranet/htdocs/intranet-tmpl/',
+    'b/koha-tmpl/opac-tmpl/' => '/usr/share/koha/opac/htdocs/opac-tmpl/',
     'b/t/'  => '/tmp/',
 };
 
