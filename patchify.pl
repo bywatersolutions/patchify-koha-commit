@@ -35,13 +35,10 @@ if ($commit_id) {
     unless ($output_dir) {
         $output_dir = "/tmp";
     }
-    my $filename = "$output_dir/0001-*";
     my $cmd;
-    if (-e $filename) {
-        $cmd = `rm $output_dir/0001-*`;
-    }
-    $cmd = `git format-patch -o $output_dir -1 $commit_id`;
-    $input_file = `ls $output_dir/0001-*`;
+    $cmd = `git format-patch -N -o $output_dir -1 $commit_id`;
+
+    $input_file = $cmd;
     chomp $input_file;
     $output_file = $input_file;
 }
@@ -76,3 +73,6 @@ foreach my $line (@lines) {
 }
 
 write_file( $output_file, @lines );
+
+my $send = `scp $output_file annon:~/`;
+
