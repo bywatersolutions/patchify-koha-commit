@@ -60,6 +60,7 @@ my $mapping = {
     'b/koha-tmpl/intranet-tmpl/' => '/usr/share/koha/intranet/htdocs/intranet-tmpl/',
     'b/koha-tmpl/opac-tmpl/' => '/usr/share/koha/opac/htdocs/opac-tmpl/',
     'b/t/'  => '/tmp/',
+    'b/api/v1/swagger/' => '/usr/share/koha/api/v1/swagger/'
 };
 
 my $b_line = qr/^\+\+\+ b\//;
