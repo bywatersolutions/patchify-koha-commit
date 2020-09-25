@@ -5,29 +5,111 @@ use feature qw(say);
 use Modern::Perl;
 use File::Slurp;
 use Getopt::Long;
+use Pod::Usage;
+
+=head1 NAME
+
+patchify.pl - Take a git patch for Koha and convert it into a debian patch that can be applied to a production server
+
+=head1 SYNOPSIS
+
+patchify.pl -i=/path/to/input.patch -o output.patch
+
+patchify.pl --help
+
+Options:
+ --help        brief help message
+ --man         print full help info
+ --input       path to input file
+ --output      patch to output file
+ --output_dir  directory for output
+ --commit      takes a commit id instead of an input file
+ --verbose     verbose mode
+
+=head1 OPTIONS
+
+=over 8
+
+=item B<--help>
+
+Brief help
+
+=item B<--man>
+
+Full manual
+
+=item B<--input>
+
+Path to input patch
+
+=item B<--output>
+
+Name for output file
+
+=item B<--output_dir
+
+Directory for output file, defaults to /tmp if not specified
+
+=item B<--commit>
+
+Takes a commit id instead of an input file. This assumes you are calling the script from a Koha clone
+
+=item B<--verbose>
+
+Report on the lines found and updated in the patch
+
+=back
+
+=head1 DESCRIPTION
+
+This script is used to convert patches from Koha into patches that can be applied directly to a packaged
+koha install on a production server. This should only be done after consulting with dev and systems [insert
+Spiderman speech here]
+
+This script also attempts to scp the patch to your home directory on annon (bywater specific)
+
+=head1 USAGE EXAMPLES
+
+C<patchify.pl> - Brief help
+
+C<patchify.pl> -i input.patch -o output.patch 
+Process the input patch, output new patch to /tmp and scp to annon
+
+C<patchify.pl> --commit HEAD~1 -o output/patch -d /home/kohaclone
+Process the patch before head and output to kohaclone
+
+=cut
 
 my $input_file;
 my $output_file;
 my $output_dir;
 my $commit_id;
 my $verbose;
+my $help;
+my $man;
 
 GetOptions(
+    "h|help"     => \$help,
+    "m|man"      => \$man,
     "i|input=s"  => \$input_file,
     "o|output=s" => \$output_file,
     "d|output_dir=s" => \$output_dir,
     "c|commit=s" => \$commit_id,
-    "verbose"    => \$verbose,
-) or die("Error in command line arguments\n");
+    "v|verbose"    => \$verbose,
+) or pod2usage(1);
+
+pod2usage(1) if $help;
+
+pod2usage( -verbose => 2 ) if $man;
 
 unless ($commit_id) {
     unless ($input_file) {
         say "-i --input <path to patch file> is required";
-        exit 1;
+        pod2usage(1);
     }
     unless ($output_file) {
         say "-o --output <path to patch file> is required";
-        exit 1;
+        pod2usage(1);
     }
 }
 
@@ -80,5 +162,5 @@ foreach my $line (@lines) {
 
 write_file( $output_file, @lines );
 
-my $send = `scp $output_file annon:~/`;
+my $send = `scp $output_file annon.bywatersolutions.com:~/`;
 
