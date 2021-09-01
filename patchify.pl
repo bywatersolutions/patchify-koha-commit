@@ -163,6 +163,3 @@ foreach my $line (@lines) {
 }
 
 write_file( $output_file, @lines );
-
-my $send = `scp $output_file annon.bywatersolutions.com:~/`;
-
