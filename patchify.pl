@@ -128,21 +128,22 @@ if ($commit_id) {
 my @lines = read_file($input_file);
 
 my $mapping = {
-    'b/debian/scripts/koha-plack' => '/usr/sbin/koha-plack',
-    'b/etc/SIPconfig.xml' => '/etc/koha/SIPconfig.xml',
     'b/C4/' => '/usr/share/koha/lib/C4/',
     'b/Koha/' => '/usr/share/koha/lib/Koha/',
-    'b/installer/' => '/usr/share/koha/intranet/cgi-bin/installer/',
-    'b/opac/' => '/usr/share/koha/opac/cgi-bin/opac/',
-    'b/misc/' => '/usr/share/koha/bin/',
-    'b/tools/' => '/usr/share/koha/intranet/cgi-bin/tools/',
-    'b/admin/' => '/usr/share/koha/intranet/cgi-bin/admin/',
     'b/acqui/' => '/usr/share/koha/intranet/cgi-bin/acqui/',
-    'b/reserve/' => '/usr/share/koha/intranet/cgi-bin/reserve/',
+    'b/admin/' => '/usr/share/koha/intranet/cgi-bin/admin/',
+    'b/api/v1/swagger/' => '/usr/share/koha/api/v1/swagger/'
+    'b/debian/scripts/koha-plack' => '/usr/sbin/koha-plack',
+    'b/etc/SIPconfig.xml' => '/etc/koha/SIPconfig.xml',
+    'b/installer/' => '/usr/share/koha/intranet/cgi-bin/installer/',
     'b/koha-tmpl/intranet-tmpl/' => '/usr/share/koha/intranet/htdocs/intranet-tmpl/',
     'b/koha-tmpl/opac-tmpl/' => '/usr/share/koha/opac/htdocs/opac-tmpl/',
+    'b/members/memberentry.pl' => '/usr/share/koha/intranet/cgi-bin/members/memberentry.pl',
+    'b/misc/' => '/usr/share/koha/bin/',
+    'b/opac/' => '/usr/share/koha/opac/cgi-bin/opac/',
+    'b/reserve/' => '/usr/share/koha/intranet/cgi-bin/reserve/',
     'b/t/'  => '/tmp/',
-    'b/api/v1/swagger/' => '/usr/share/koha/api/v1/swagger/'
+    'b/tools/' => '/usr/share/koha/intranet/cgi-bin/tools/',
 };
 
 my $b_line = qr/^\+\+\+ b\//;
