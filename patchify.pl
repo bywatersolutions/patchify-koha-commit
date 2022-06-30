@@ -145,6 +145,7 @@ my $mapping = {
     'b/reserve/' => '/usr/share/koha/intranet/cgi-bin/reserve/',
     'b/t/'  => '/tmp/',
     'b/tools/' => '/usr/share/koha/intranet/cgi-bin/tools/',
+    'b/labels/' => '/usr/share/koha/intranet/cgi-bin/labels/',
 };
 
 my $b_line = qr/^\+\+\+ b\//;
