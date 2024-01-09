@@ -5,111 +5,29 @@ use feature qw(say);
 use Modern::Perl;
 use File::Slurp;
 use Getopt::Long;
-use Pod::Usage;
-
-=head1 NAME
-
-patchify.pl - Take a git patch for Koha and convert it into a debian patch that can be applied to a production server
-
-=head1 SYNOPSIS
-
-patchify.pl -i=/path/to/input.patch -o output.patch
-
-patchify.pl --help
-
-Options:
- --help        brief help message
- --man         print full help info
- --input       path to input file
- --output      patch to output file
- --output_dir  directory for output
- --commit      takes a commit id instead of an input file
- --verbose     verbose mode
-
-=head1 OPTIONS
-
-=over 8
-
-=item B<--help>
-
-Brief help
-
-=item B<--man>
-
-Full manual
-
-=item B<--input>
-
-Path to input patch
-
-=item B<--output>
-
-Name for output file
-
-=item B<--output_dir
-
-Directory for output file, defaults to /tmp if not specified
-
-=item B<--commit>
-
-Takes a commit id instead of an input file. This assumes you are calling the script from a Koha clone
-
-=item B<--verbose>
-
-Report on the lines found and updated in the patch
-
-=back
-
-=head1 DESCRIPTION
-
-This script is used to convert patches from Koha into patches that can be applied directly to a packaged
-koha install on a production server. This should only be done after consulting with dev and systems [insert
-Spiderman speech here]
-
-This script also attempts to scp the patch to your home directory on annon (bywater specific)
-
-=head1 USAGE EXAMPLES
-
-C<patchify.pl> - Brief help
-
-C<patchify.pl> -i input.patch -o output.patch 
-Process the input patch, output new patch to /tmp and scp to annon
-
-C<patchify.pl> --commit HEAD~1 -o output/patch -d /home/kohaclone
-Process the patch before head and output to kohaclone
-
-=cut
 
 my $input_file;
 my $output_file;
 my $output_dir;
 my $commit_id;
 my $verbose;
-my $help;
-my $man;
 
 GetOptions(
-    "h|help"     => \$help,
-    "m|man"      => \$man,
     "i|input=s"  => \$input_file,
     "o|output=s" => \$output_file,
     "d|output_dir=s" => \$output_dir,
     "c|commit=s" => \$commit_id,
-    "v|verbose"    => \$verbose,
-) or pod2usage(1);
-
-pod2usage(1) if $help;
-
-pod2usage( -verbose => 2 ) if $man;
+    "verbose"    => \$verbose,
+) or die("Error in command line arguments\n");
 
 unless ($commit_id) {
     unless ($input_file) {
         say "-i --input <path to patch file> is required";
-        pod2usage(1);
+        exit 1;
     }
     unless ($output_file) {
         say "-o --output <path to patch file> is required";
-        pod2usage(1);
+        exit 1;
     }
 }
 
@@ -130,22 +48,29 @@ my @lines = read_file($input_file);
 my $mapping = {
     'b/C4/' => '/usr/share/koha/lib/C4/',
     'b/Koha/' => '/usr/share/koha/lib/Koha/',
-    'b/acqui/' => '/usr/share/koha/intranet/cgi-bin/acqui/',
     'b/admin/' => '/usr/share/koha/intranet/cgi-bin/admin/',
-    'b/api/v1/swagger/' => '/usr/share/koha/api/v1/swagger/',
-    'b/debian/scripts/koha-plack' => '/usr/sbin/koha-plack',
-    'b/etc/SIPconfig.xml' => '/etc/koha/SIPconfig.xml',
+    'b/errors/' => '/usr/share/koha/intranet/cgi-bin/errors/',
+    'b/suggestion/' => '/usr/share/koha/intranet/cgi-bin/suggestion/',
     'b/installer/' => '/usr/share/koha/intranet/cgi-bin/installer/',
+    'b/acqui/' => '/usr/share/koha/intranet/cgi-bin/acqui/',
+    'b/opac/' => '/usr/share/koha/opac/cgi-bin/opac/',
+    'b/misc/' => '/usr/share/koha/bin/',
+    'b/tools/' => '/usr/share/koha/intranet/cgi-bin/tools/',
+    'b/members/' => '/usr/share/koha/intranet/cgi-bin/members/',
     'b/koha-tmpl/intranet-tmpl/' => '/usr/share/koha/intranet/htdocs/intranet-tmpl/',
     'b/koha-tmpl/opac-tmpl/' => '/usr/share/koha/opac/htdocs/opac-tmpl/',
-    'b/members/memberentry.pl' => '/usr/share/koha/intranet/cgi-bin/members/memberentry.pl',
-    'b/misc/' => '/usr/share/koha/bin/',
-    'b/opac/' => '/usr/share/koha/opac/cgi-bin/opac/',
-    'b/opac/opac-memberentry.pl' => '/usr/share/koha/opac/cgi-bin/opac/opac-memberentry.pl',
-    'b/reserve/' => '/usr/share/koha/intranet/cgi-bin/reserve/',
+    'b/catalogue/' => '/usr/share/koha/intranet/cgi-bin/catalogue/',
     'b/t/'  => '/tmp/',
-    'b/tools/' => '/usr/share/koha/intranet/cgi-bin/tools/',
-    'b/labels/' => '/usr/share/koha/intranet/cgi-bin/labels/',
+    'b/debian/scripts/' => '/usr/sbin/',
+    'b/etc/' => '/etc/koha/',
+    'b/reserve/' => '/usr/share/koha/intranet/cgi-bin/reserve/',
+    'b/api/' => '/usr/share/koha/api/',
+    'b/circ/' => '/usr/share/koha/intranet/cgi-bin/circ/',
+    'b/cataloguing' => '/usr/share/koha/intranet/cgi-bin/cataloguing/',
+    'b/virtualshelves' => '/usr/share/koha/intranet/cgi-bin/virtualshelves/',
+    'b/pos' => '/usr/share/koha/intranet/cgi-bin/pos/',
+    'b/svc/' => '/usr/share/koha/intranet/cgi-bin/svc/',
+    'b/bookings/' => '/usr/share/koha/intranet/cgi-bin/bookings/'
 };
 
 my $b_line = qr/^\+\+\+ b\//;
@@ -164,3 +89,8 @@ foreach my $line (@lines) {
 }
 
 write_file( $output_file, @lines );
+
+my $send = `scp $output_file annon:~/`;
+$output_file =~ s/\/tmp\///;
+my $copy = `ssh annon "scp $output_file drax:/home/rocket/files/patches/"`;
+my $cleanup = `ssh annon "rm $output_file"`;
