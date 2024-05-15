@@ -89,8 +89,3 @@ foreach my $line (@lines) {
 }
 
 write_file( $output_file, @lines );
-
-my $send = `scp $output_file annon:~/`;
-$output_file =~ s/\/tmp\///;
-my $copy = `ssh annon "scp $output_file drax:/home/rocket/files/patches/"`;
-my $cleanup = `ssh annon "rm $output_file"`;
