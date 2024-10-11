@@ -70,7 +70,8 @@ my $mapping = {
     'b/virtualshelves' => '/usr/share/koha/intranet/cgi-bin/virtualshelves/',
     'b/pos' => '/usr/share/koha/intranet/cgi-bin/pos/',
     'b/svc/' => '/usr/share/koha/intranet/cgi-bin/svc/',
-    'b/bookings/' => '/usr/share/koha/intranet/cgi-bin/bookings/'
+    'b/bookings/' => '/usr/share/koha/intranet/cgi-bin/bookings/',
+    'b/reports/' => '/usr/share/koha/intranet/cgi-bin/reports/'
 };
 
 my $b_line = qr/^\+\+\+ b\//;
